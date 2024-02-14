@@ -51,6 +51,7 @@ def vm_action_click(update: Update, context: CallbackContext) -> int:
         query.edit_message_text('Cancel this time action.')
         return ConversationHandler.END
 
+    query.edit_message_text(f'Start to deleteing {sub_option_selected}... Please wait for a bit.')
     res = delete_instance(GCP_PROJECT_ID, 'asia-east1-b', sub_option_selected)
     if res:
         reply_text = f'Done to delete the {sub_option_selected} VM on GCP.'
