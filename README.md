@@ -1,6 +1,6 @@
 # Telegram Bot 
 
-Mainly it can handle some actions regarding cloud management such as controlling the Compute Engine on GCP.
+Mainly it can handle some actions regarding cloud management such as controlling Compute Engine on GCP.
 
 ## Usage 
 
@@ -11,4 +11,5 @@ Mainly it can handle some actions regarding cloud management such as controlling
 
 - [x] Check whole instances of compute engine on GCP.
 - [x] List whole instances of compute engine, and delete a specific instance on GCP.
+    - [ ] Dynamically fill the zone value from an instance. 
 - [ ] Create an instance on GCP.
