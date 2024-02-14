@@ -1,4 +1,5 @@
 import yaml
+import os
 from telegram.ext import Updater, \
                          CommandHandler, \
                          ConversationHandler, \
@@ -21,10 +22,12 @@ GCP_ZONE = data.get('GCP_ZONE')
 GCP_SERVICE_ACCOUNT_KEY_PATH = data.get('GCP_SERVICE_ACCOUNT_KEY_PATH')
 TELEGRAM_BOT_TOKEN = data.get('TELEGRAM_BOT_TOKEN')
 
-credentials = service_account.Credentials.from_service_account_file(
-    GCP_SERVICE_ACCOUNT_KEY_PATH,
-    scopes=["https://www.googleapis.com/auth/cloud-platform"],
-)
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GCP_SERVICE_ACCOUNT_KEY_PATH
+
+# credentials = service_account.Credentials.from_service_account_file(
+#     GCP_SERVICE_ACCOUNT_KEY_PATH,
+#     scopes=["https://www.googleapis.com/auth/cloud-platform"],
+# )
 
 def check_vm(update: Update, context: CallbackContext) -> None:
     result = list_all_instances(GCP_PROJECT_ID)

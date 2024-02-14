@@ -2,6 +2,13 @@
 
 Mainly it can handle some actions regarding cloud management such as controlling Compute Engine on GCP.
 
+![](./assets/demo.gif)
+
+✨ Key Features:
+
+- Instantly view and monitor VMs with a user-friendly interface.
+- Effortlessly delete instances using dynamic buttons tailored to your GCP environment.
+
 ## Usage 
 
 1. Please provide the permission key file in the assets, and rename as `gcp_key.json` file.
@@ -14,6 +21,14 @@ Mainly it can handle some actions regarding cloud management such as controlling
     ```
     python3 main.py
     ```
+
+## Docker
+
+```
+docker build -f Docker/Dockerfile -t telegram-bot:latest .
+docker run -itd --rm telegram-bot:latest
+```
+
 ## Features
 
 - [x] Check whole instances of compute engine on GCP.
