@@ -56,10 +56,11 @@ def vm_action_click(update: Update, context: CallbackContext) -> int:
     if sub_option_selected == 'Cancel':
         query.edit_message_text('Cancel this time action.')
         return ConversationHandler.END
-
     query.edit_message_text(
         f'Start to deleteing {sub_option_selected}... Please wait for a bit.')
-    res = delete_instance(GCP_PROJECT_ID, 'asia-east1-b', sub_option_selected)
+    result_2 = context.user_data.get('result_2')
+    res = delete_instance(
+        GCP_PROJECT_ID, result_2[sub_option_selected], sub_option_selected)
     if res:
         reply_text = f'Done to delete the {sub_option_selected} VM on GCP.'
     else:
@@ -76,22 +77,33 @@ def button_click(update: Update, context: CallbackContext) -> None:
     result = list_all_instances(GCP_PROJECT_ID)
     result_1 = format_instance_info(result)
     result_2 = format_instance_info_dynamic(result)
+    if len(result_1) == 0:
+        query.edit_message_text('There is no instance on GCP now.')
+        return ConversationHandler.END
 
     if option_selected == '1':
         query.edit_message_text(result_1)
     elif option_selected == '2':
         dynamic_buttons = []
-        for i, element in enumerate(result_2):
-            dynamic_buttons.append({"text": element,
-                                   "callback_data": element})
-        # Add one more button for Cancel this time action.
-        dynamic_buttons.append({"text": "Cancel",  "callback_data": "Cancel"})
+        for instance in result_2:
+            try:
+                dynamic_buttons.append({"text": instance,
+                                        "callback_data": instance})
+            except Exception:
+                pass
+        if len(dynamic_buttons) != 0:
+            dynamic_buttons.append({"text": "Cancel",
+                                    "callback_data": "Cancel"})
+        else:
+            query.edit_message_text('There is no instance on GCP now.')
+            return ConversationHandler.END
 
         keyboard = [InlineKeyboardButton(button["text"],
                                          callback_data=button["callback_data"]) for button in dynamic_buttons]
         reply_markup = InlineKeyboardMarkup([keyboard])
         query.edit_message_text('Please choose a VM:',
                                 reply_markup=reply_markup)
+        context.user_data['result_2'] = result_2
         return VM_ACTION_SELECTED
     elif option_selected == '3':
         query.edit_message_text('Do not support the function of creating VM.')
@@ -109,7 +121,7 @@ def main():
         entry_points=[CommandHandler('gcp_vm', vm_functions)],
         states={
             CHOOSING: [CallbackQueryHandler(button_click)],
-            VM_ACTION_SELECTED: [CallbackQueryHandler(vm_action_click)],
+            VM_ACTION_SELECTED: [CallbackQueryHandler(vm_action_click, pass_user_data=True)],
             OPTION_SELECTED: [],
         },
         fallbacks=[],

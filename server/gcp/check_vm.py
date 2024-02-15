@@ -52,14 +52,15 @@ def format_instance_info(all_instances: dict[str, Iterable[compute_v1.Instance]]
 
     return '\n'.join(instance_info)
 
-def format_instance_info_dynamic(all_instances: dict[str, Iterable[compute_v1.Instance]]) -> str:
-    instance_info = []
-    for zone, instances in all_instances.items():
-        # instance_info.append(f"{zone}:")
-        for instance in instances:
-            instance_info.append(instance.name)
 
-    if not instance_info:
+def format_instance_info_dynamic(all_instances: dict[str, Iterable[compute_v1.Instance]]) -> str:
+    instance_info = {}
+    for zone, instances in all_instances.items():
+        zone_name = zone.split('/')[-1]
+        for instance in instances:
+            instance_info[instance.name] = zone_name
+
+    if len(instance_info.keys()) == 0:
         return 'Currently there is no any running VM on GCP.'
 
     return instance_info
